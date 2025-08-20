@@ -1,0 +1,11 @@
+*.json
+insSQL/
+insURL/
+node_modules/
+pSQL/
+sitemap/
+*.sql
+*.csv
+villSQL/
+villURL/
+States_vill/
