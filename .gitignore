@@ -2,6 +2,7 @@
 insSQL/
 insURL/
 node_modules/
+myenv/
 pSQL/
 sitemap/
 *.sql
@@ -9,3 +10,4 @@ sitemap/
 villSQL/
 villURL/
 States_vill/
+.env

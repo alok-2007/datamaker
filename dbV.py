@@ -10,7 +10,7 @@ result = ""
 
 url = []
 
-to_read = "AndamanAndNicobarIslands"
+to_read = "Delhi"
 
 df = pd.read_csv(f'States_vill/{to_read}_vill.csv');
 
