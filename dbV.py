@@ -3,14 +3,14 @@ import os
 import re
 import json
 
-start = 1
-end = 20000
+start = 40000
+end = 50000
 
 result = ""
 
 url = []
 
-to_read = "Delhi"
+to_read = "Bihar"
 
 df = pd.read_csv(f'States_vill/{to_read}_vill.csv');
 
@@ -43,9 +43,11 @@ def spec_vill(vill):
     vill = re.sub(r'(?:\b([A-Za-z])\.)+', lambda m: ''.join(re.findall(r'[A-Za-z]', m.group(0))), vill)
 
     # Remove trailing non-word chars
-    vill = re.sub(r"[^\w]$", "", vill)
+    vill = re.sub(r"[^\w\)]$", "", vill)
     vill = vill.replace("*", " ")
+    vill = re.sub(r"\.", " ", vill)
 
+    vill = re.sub(r"^([\w\s\-]+)\s?(\(\w+)$", r"\1 \2)", vill)
     vill = re.sub(r"^([\w\s]+)(\(\w+)$", r"\1 \2)", vill)
     vill = re.sub(r"\s{2,}", " ", vill)
     # Remove leading non-word chars
@@ -114,7 +116,7 @@ for i in subset.itertuples(index=False):
     if "NOT YET NAMED" in villName:
         continue
     url.append(f'https://searchpincode.in/{escape(key)}')
-    sql = f"""INSERT INTO "vill" VALUES('{escape(key)}','{escape(villName)}','{escape(clean_sds(i.subdistrictNameEnglish))}','{escape(clean_sds(i.districtNameEnglish))}','{escape(key_dist(i.stateNameEnglish, i.districtNameEnglish))}','{escape(clean_sds(i.stateNameEnglish))}','{escape(i.pincode)}', '{escape(i.villageCode)}');"""
+    sql = f"""INSERT OR REPLACE INTO "vill" VALUES('{escape(key)}','{escape(villName)}','{escape(clean_sds(i.subdistrictNameEnglish))}','{escape(clean_sds(i.districtNameEnglish))}','{escape(key_dist(i.stateNameEnglish, i.districtNameEnglish))}','{escape(clean_sds(i.stateNameEnglish))}','{escape(i.pincode)}', '{escape(i.villageCode)}');"""
     result += sql + "\n"
 
 os.makedirs("villSQL", exist_ok=True)
