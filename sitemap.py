@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 URL_PER_FILE = 48000
 to_state = 1
-to_name = "villURL/Bihar_Url_1"
+to_name = "villURL/Chhattisgarh_Url_1"
 to_name2 = 'villURL/Bihar_Url_2'
 
 os.makedirs("sitemap", exist_ok=True)
@@ -13,10 +13,10 @@ os.makedirs("sitemap", exist_ok=True)
 with open(f"{to_name}.json", "r") as f:
     dt = json.load(f)
 
-with open(f"{to_name2}.json", "r") as f2:
-    dt2 = json.load(f2)
+#with open(f"{to_name2}.json", "r") as f2:
+#    dt2 = json.load(f2)
 
-data = dt + dt2
+data = dt
 
 urls = data if isinstance(data, list) else data["urls"]
 

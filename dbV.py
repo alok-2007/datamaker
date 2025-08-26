@@ -3,14 +3,14 @@ import os
 import re
 import json
 
-start = 40000
-end = 50000
+start = 1
+end = 40000
 
 result = ""
 
 url = []
 
-to_read = "Bihar"
+to_read = "JammuAndKashmir"  # Change this to the desired state name without spaces
 
 df = pd.read_csv(f'States_vill/{to_read}_vill.csv');
 
