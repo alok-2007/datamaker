@@ -4,13 +4,17 @@ import re
 import json
 
 start = 1
-end = 40000
+end = 60000
 
 result = ""
 
 url = []
 
-to_read = "JammuAndKashmir"  # Change this to the desired state name without spaces
+filter = set()
+
+dupli = []
+
+to_read = "Telangana"  # Change this to the desired state name without spaces
 
 df = pd.read_csv(f'States_vill/{to_read}_vill.csv');
 
@@ -68,14 +72,15 @@ def clean_vill(villageName):
         villageName = re.sub(r"\s*\.\s*$", "", villageName)
         villageName = re.sub(r"^\s*\.\s*", "", villageName)
         villageName = re.sub(r"\s\.\s", " ", villageName)
-        villageName = re.sub(r"\s*\.\s*(?=([a-z0-9\-]{2,}))", " \1", villageName)
         villageName = re.sub(
             r'(?:\b([a-zA-Z])\.\s*)+',
             lambda m: ''.join(re.findall(r'[a-zA-Z]', m.group(0))),
             villageName
         )
+        villageName = re.sub(r"\s*\.\s*(?=([a-z0-9\-]{2,}))", r" \1", villageName)
         villageName = re.sub(r'\s*\.\s*', '-', villageName)
         villageName = re.sub(r'\.-*$', '', villageName)
+    villageName = re.sub(r"-{2,}", "-", villageName)
     villageName = re.sub(r"\s+", "-", villageName).strip()
     villageName = re.sub(r"\.+", "", villageName)
     villageName = re.sub(r"\/+", "-", villageName)
@@ -115,8 +120,12 @@ for i in subset.itertuples(index=False):
     villName = spec_vill(i.villageNameEnglish)
     if "NOT YET NAMED" in villName:
         continue
+    if key in filter:
+        dupli.append(f"{key} - vill = {i.villageNameEnglish}, {i.subdistrictNameEnglish}, {i.districtNameEnglish}")
+        continue
+    filter.add(key)
     url.append(f'https://searchpincode.in/{escape(key)}')
-    sql = f"""INSERT OR REPLACE INTO "vill" VALUES('{escape(key)}','{escape(villName)}','{escape(clean_sds(i.subdistrictNameEnglish))}','{escape(clean_sds(i.districtNameEnglish))}','{escape(key_dist(i.stateNameEnglish, i.districtNameEnglish))}','{escape(clean_sds(i.stateNameEnglish))}','{escape(i.pincode)}', '{escape(i.villageCode)}');"""
+    sql = f"""INSERT INTO "vill" VALUES('{escape(key)}','{escape(villName)}','{escape(clean_sds(i.subdistrictNameEnglish))}','{escape(clean_sds(i.districtNameEnglish))}','{escape(key_dist(i.stateNameEnglish, i.districtNameEnglish))}','{escape(clean_sds(i.stateNameEnglish))}','{escape(i.pincode)}', '{escape(i.villageCode)}');"""
     result += sql + "\n"
 
 os.makedirs("villSQL", exist_ok=True)
@@ -135,3 +144,6 @@ while os.path.exists(f"villURL/{to_read}_Url_{num}.json"):
 
 with open(f"villURL/{to_read}_Url_{num}.json", 'w', encoding="utf-8") as u:
     json.dump(url, u, indent=2)
+
+with open(f"duplicate.json", "w", encoding="utf-8") as dup:
+    json.dump(dupli, dup, indent=2)

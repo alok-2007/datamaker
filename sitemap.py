@@ -5,8 +5,8 @@ import xml.etree.ElementTree as ET
 
 URL_PER_FILE = 48000
 to_state = 1
-to_name = "villURL/Chhattisgarh_Url_1"
-to_name2 = 'villURL/Bihar_Url_2'
+to_name = "villURL/Telangana_Url_1"
+#to_name2 = 'villURL/Bihar_Url_2'
 
 os.makedirs("sitemap", exist_ok=True)
 
